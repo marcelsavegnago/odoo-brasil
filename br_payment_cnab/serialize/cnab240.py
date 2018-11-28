@@ -53,7 +53,7 @@ class Cnab_240(object):
         return date_value.strftime("%d%m%Y")
 
     def is_doc_or_ted(self, op):
-        if op == '01' or op == '02':
+        if op not in ('01', '02'):
             return True
         return False
 
