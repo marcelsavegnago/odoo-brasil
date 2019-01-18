@@ -15,6 +15,7 @@
                     <field name="linha_digitavel" attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}"/>
                     <field name="bank_account_id" attrs="{'invisible': [('payment_type', 'not in', ('01', '02'))]}" />
                     <field name="date_maturity" />
+                    <field name="payment_date" />
                     <field name="amount" attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}"/>
                     <field name="discount_value" attrs="{'invisible': [('payment_type', 'not in', ('03', '04'))]}"/>
                 </group>

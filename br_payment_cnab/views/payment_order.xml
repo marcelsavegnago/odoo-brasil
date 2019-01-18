@@ -47,7 +47,10 @@
             </field>
             <field name="emission_date" position="after">
                 <field name="invoice_date"/>
-                <field name="create_date"/>
+                <field name="payment_date"/>
+            </field>
+            <field name="emission_date" position="attributes">
+                <attribute name="string">Data de Digitação</attribute>
             </field>
             <field name="amount_total" position="after">
                 <field name="discount_value"/>

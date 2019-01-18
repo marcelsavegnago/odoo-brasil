@@ -63,7 +63,7 @@ class PaymentOrderLine(models.Model):
     linha_digitavel = fields.Char(string="Linha Digitável")
     barcode = fields.Char('Código de Barras')
     invoice_date = fields.Date('Data da Competência')
-    payment_date = fields.Date('Data Efetiva do Pagamento')
+    payment_date = fields.Date('Data do Pagamento')
     value_final = fields.Float(
         string="Valor Final", compute="_compute_final_value",
         digits=(18, 2), readonly=True)
@@ -78,7 +78,6 @@ class PaymentOrderLine(models.Model):
     autenticacao_pagamento = fields.Char(
         string="Chave de Autenticação do pagamento")
     protocolo_pagamento = fields.Char(string="Protocolo do Pagamento")
-    create_date = fields.Date('Data de Digitação', readonly=True)
     destiny_journal_id = fields.Many2one(
         'account.journal', 'Diário p/ Transferência')
     bank_account_id = fields.Many2one(

@@ -28,6 +28,7 @@ class WizardChangePayment(models.TransientModel):
         'res.partner.bank', string="Conta p/ Transferência",
         domain="[('partner_id', '=', partner_id)]")
     date_maturity = fields.Date(string="Data de Vencimento")
+    payment_date = fields.Date(string="Data de Pagamento")
     amount = fields.Float(string="Valor no boleto", readonly=True)
     discount_value = fields.Float(string="Desconto")
 
@@ -80,6 +81,7 @@ class WizardChangePayment(models.TransientModel):
                 'linha_digitavel': linha_digitavel or '',
                 'bank_account_id': self.bank_account_id.id,
                 'discount_value': self.discount_value,
+                'payment_date': self.payment_date,
                 'date_maturity': self.date_maturity or order_line.date_maturity
             })
             self.move_line_id.write({
@@ -95,11 +97,12 @@ class WizardChangePayment(models.TransientModel):
             vals = invoice.prepare_payment_line_vals(self.move_line_id)
             vals['date_maturity'] = \
                 self.date_maturity or self.move_line_id.date_maturity
-            vals['linha_digitavel'] = linha_digitavel
-            vals['barcode'] = barcode
             vals['bank_account_id'] = self.bank_account_id.id
             self.env['payment.order.line'].action_generate_payment_order_line(
                 self.payment_mode_id, vals)
+            if self.payment_type in ['03', '04']:
+                vals['linha_digitavel'] = linha_digitavel
+                vals['barcode'] = barcode
             if self.date_maturity:
                 self.move_line_id.write({
                     'payment_mode_id': self.payment_mode_id.id,
