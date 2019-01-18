@@ -134,6 +134,7 @@ class AccountVoucher(models.Model):
             'voucher_id': self.id,
             'date_maturity': self.date_due,
             'invoice_date': self.date,
+            'payment_date': self.account_date,
             'barcode': self.barcode,
             'linha_digitavel': self.linha_digitavel,
             # TODO Ajustar o valor de multa e de juros

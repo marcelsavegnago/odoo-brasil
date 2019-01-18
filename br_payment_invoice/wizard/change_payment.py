@@ -29,6 +29,7 @@ class WizardChangePayment(models.TransientModel):
         domain="[('partner_id', '=', partner_id)]")
     date_maturity = fields.Date(string="Data de Vencimento")
     amount = fields.Float(string="Valor no boleto", readonly=True)
+    discount_value = fields.Float(string="Desconto")
 
     @api.model
     def default_get(self, fields):
@@ -61,13 +62,14 @@ class WizardChangePayment(models.TransientModel):
             raise UserError("DV do código de Barras não confere!")
 
     def action_update_info(self):
-        linha = re.sub('[^0-9]', '', self.linha_digitavel or '')
-        if len(linha) not in (47, 48):
-            raise UserError(
-                'Tamanho da linha digitável inválido %s' % len(linha))
-        vals = self._get_digitable_line_vals(linha)
-        linha_digitavel = pretty_format_line(linha)
-        barcode = vals['barcode']
+        if self.payment_type in ['03', '04']:
+            linha = re.sub('[^0-9]', '', self.linha_digitavel or '')
+            if len(linha) not in (47, 48):
+                raise UserError(
+                    'Tamanho da linha digitável inválido %s' % len(linha))
+            vals = self._get_digitable_line_vals(linha)
+            linha_digitavel = pretty_format_line(linha)
+            barcode = vals['barcode']
 
         order_line = self.env['payment.order.line'].search(
             [('move_line_id', '=', self.move_line_id.id)])
@@ -75,8 +77,9 @@ class WizardChangePayment(models.TransientModel):
         if order_line and order_line.state == 'draft':
             order_line.write({
                 'payment_mode_id': self.payment_mode_id.id,
-                'linha_digitavel': linha_digitavel,
+                'linha_digitavel': linha_digitavel or '',
                 'bank_account_id': self.bank_account_id.id,
+                'discount_value': self.discount_value,
                 'date_maturity': self.date_maturity or order_line.date_maturity
             })
             self.move_line_id.write({

@@ -47,6 +47,13 @@
             </field>
             <field name="emission_date" position="after">
                 <field name="invoice_date"/>
+                <field name="create_date"/>
+            </field>
+            <field name="amount_total" position="after">
+                <field name="discount_value"/>
+                <field name="interest_value"/>
+                <field name="fine_value"/>
+                <field name="value_final"/>
             </field>
         </field>
     </record>

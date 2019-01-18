@@ -14,6 +14,9 @@ class AccountInvoice(models.Model):
         'res.partner.bank', string="Conta p/ Transferência",
         domain="[('partner_id', '=', partner_id)]", readonly=True,
         states={'draft': [('readonly', False)]})
+    linha_digitavel = fields.Char(
+        string="Linha Digitável", readonly=True,
+        states={'draft': [('readonly', False)]})
 
     def prepare_payment_line_vals(self, move_line_id):
         return {
@@ -27,7 +30,9 @@ class AccountInvoice(models.Model):
             'move_line_id': move_line_id.id,
             'date_maturity': move_line_id.date_maturity,
             'invoice_date': move_line_id.date,
+            'payment_date': self.date,
             'invoice_id': self.id,
+            'linha_digitavel': self.linha_digitavel,
         }
 
     def get_order_line(self):

@@ -62,15 +62,23 @@ class PaymentOrderLine(models.Model):
 
     linha_digitavel = fields.Char(string="Linha Digitável")
     barcode = fields.Char('Código de Barras')
-    invoice_date = fields.Date('Data da Fatura')
+    invoice_date = fields.Date('Data da Competência')
+    payment_date = fields.Date('Data Efetiva do Pagamento')
     value_final = fields.Float(
-        string="Final Value", compute="_compute_final_value",
+        string="Valor Final", compute="_compute_final_value",
         digits=(18, 2), readonly=True)
-
+    fine_value = fields.Float(
+        'Multa', readonly=True, states={'draft': [('readonly', False)]})
+    interest_value = fields.Float(
+        'Juros', readonly=True,
+        states={'draft': [('readonly', False)]})
+    discount_value = fields.Float(
+        'Desconto', readonly=True,
+        states={'draft': [('readonly', False)]})
     autenticacao_pagamento = fields.Char(
         string="Chave de Autenticação do pagamento")
     protocolo_pagamento = fields.Char(string="Protocolo do Pagamento")
-
+    create_date = fields.Date('Data de Digitação', readonly=True)
     destiny_journal_id = fields.Many2one(
         'account.journal', 'Diário p/ Transferência')
     bank_account_id = fields.Many2one(
@@ -173,17 +181,19 @@ class PaymentOrderLine(models.Model):
                        Verifique a linha digitável']
         return errors
 
-    def validate_base_information(self, payment_mode):
+    def validate_base_information(self, payment_mode, vals):
         errors = []
         if not payment_mode.journal_id.company_id.cnpj_cpf:
             errors += ['Preencha o CNPJ da empresa']
         if not payment_mode.journal_id.company_id.legal_name:
             errors += ['Preencha a Razão Social da empresa']
+        if vals['payment_date'] > vals['date_maturity']:
+            errors += ['Data de pagamento posterior à data de vencimento']
         return errors
 
     def validate_information(self, payment_mode, vals):
         errors = []
-        errors += self.validate_base_information(payment_mode)
+        errors += self.validate_base_information(payment_mode, vals)
         validate = getattr(
             self, 'validate_payment_type_%s' %
             payment_mode.payment_type, False)
@@ -267,6 +277,9 @@ class PaymentOrderLine(models.Model):
             'emission_date': date.today(),
             'type': 'payable',
             'nosso_numero': journal.l10n_br_sequence_nosso_numero.next_by_id(),
+            'create_date': datetime.now().strftime("%d%m%Y"),
+            'fine_value': vals.get('fine_value'),
+            'interest_value': vals.get('interest_value'),
         }
         line_vals.update(vals)
         order_line = self.sudo().create(line_vals)
@@ -290,6 +303,8 @@ class PaymentOrderLine(models.Model):
             })
         self.write({'state': 'approved'})
 
+    # Adicionar aqui o processamento do disconto multa e juros
+    # para debitar na conta correspondente. todas já estão criadas.
     def create_move_and_reconcile(self, order_line):
         move = self.env['account.move'].create({
             'name': '/',

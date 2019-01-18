@@ -25,5 +25,6 @@ class AccountMoveLine(models.Model):
                 self.invoice_id.l10n_br_bank_account_id.id,
                 'default_linha_digitavel': line.linha_digitavel or '',
                 'default_date_maturity': line.date_maturity,
+                'discount_value': line.discount_value,
             }
         })
