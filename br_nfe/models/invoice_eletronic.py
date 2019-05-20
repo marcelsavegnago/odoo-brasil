@@ -413,6 +413,7 @@ class InvoiceEletronic(models.Model):
                     'vBCSTRet': '0.00',
                     'vICMSSubstituto': '0,00',
                     'vICMSSTRet': '0,00',
+                    'pST': '0.00'
                 },
                 'IPI': {
                     'clEnq': item.classe_enquadramento_ipi or '',
