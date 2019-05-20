@@ -606,7 +606,13 @@ class InvoiceEletronic(models.Model):
             'vICMSDeson': '0.00',
             'vFCP': '0.00',  # TODO Implementar aqui
             'vBCST': "%.02f" % self.valor_bc_icmsst,
-
+            
+            #Todo Implementar
+            'vBCSTRet': '',
+            'vICMSSubstituto': '',
+            'vICMSSTRet': '',
+            'pST': '',
+                    
             'vST': "%.02f" % self.valor_icmsst,
             'vFCPST': '0.00',
             'vFCPSTRet': '0.00',
