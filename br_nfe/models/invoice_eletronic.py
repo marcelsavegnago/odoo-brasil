@@ -410,10 +410,10 @@ class InvoiceEletronic(models.Model):
                     'pCredSN': "%.02f" % item.icms_aliquota_credito,
                     'vCredICMSSN': "%.02f" % item.icms_valor_credito,
                     #Implementar Campos
-                    'vBCSTRet': '',
-                    'vICMSSubstituto': '',
-                    'vICMSSTRet': '',
-                    'pST': ''
+                    'vBCSTRet': '0.00',
+                    'vICMSSubstituto': '0.00',
+                    'vICMSSTRet': '0.00',
+                    'pST': '0.0000'
                 },
                 'IPI': {
                     'clEnq': item.classe_enquadramento_ipi or '',
@@ -608,10 +608,10 @@ class InvoiceEletronic(models.Model):
             'vBCST': "%.02f" % self.valor_bc_icmsst,
             
             #Todo Implementar
-            'vBCSTRet': '',
-            'vICMSSubstituto': '',
-            'vICMSSTRet': '',
-            'pST': '',
+            'vBCSTRet': '0.00',
+            'vICMSSubstituto': '0.00',
+            'vICMSSTRet': '0.00',
+            'pST': '0.0000',
                     
             'vST': "%.02f" % self.valor_icmsst,
             'vFCPST': '0.00',
