@@ -434,6 +434,7 @@ class InvoiceEletronic(models.Model):
                 'vFCPUFDest': "%.02f" % item.icms_fcp_uf_dest,
                 'vICMSUFDest': "%.02f" % item.icms_uf_dest,
                 'vICMSUFRemet': "%.02f" % item.icms_uf_remet, }
+        
         return {'prod': prod, 'imposto': imposto,
                 'infAdProd': item.informacao_adicional}
 
@@ -606,13 +607,6 @@ class InvoiceEletronic(models.Model):
             'vICMSDeson': '0.00',
             'vFCP': '0.00',  # TODO Implementar aqui
             'vBCST': "%.02f" % self.valor_bc_icmsst,
-            
-            #Todo Implementar
-            'vBCSTRet': '0.00',
-            'vICMSSubstituto': '0.00',
-            'vICMSSTRet': '0.00',
-            'pST': '0.0000',
-                    
             'vST': "%.02f" % self.valor_icmsst,
             'vFCPST': '0.00',
             'vFCPSTRet': '0.00',
